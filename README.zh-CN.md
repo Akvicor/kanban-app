@@ -9,6 +9,9 @@
     <a href="README.md">English</a> | <strong>简体中文</strong>
   </p>
   <p>
+    <a href="https://www.ksyaki.com/archives/kanban-zi-tuo-guan-de-ge-ren-ji-hua-yu-dai-ban-kan-ban">博客链接</a>
+  </p>
+  <p>
     <a href="#工作方式">工作方式</a> · <a href="#安装">安装</a> · <a href="#使用">使用</a> · <a href="#与看板服务器的约定">与看板服务器的约定</a> · <a href="#开发">开发</a> · <a href="#打包与发布">打包与发布</a>
   </p>
 </div>

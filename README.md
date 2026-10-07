@@ -9,6 +9,9 @@
     <strong>English</strong> | <a href="README.zh-CN.md">简体中文</a>
   </p>
   <p>
+    <a href="https://www.ksyaki.com/archives/kanban-zi-tuo-guan-de-ge-ren-ji-hua-yu-dai-ban-kan-ban">Blog</a>
+  </p>
+  <p>
     <a href="#how-it-works">How it works</a> · <a href="#install">Install</a> · <a href="#usage">Usage</a> · <a href="#contract-with-the-kanban-server">Server contract</a> · <a href="#development">Development</a> · <a href="#packaging-and-release">Packaging and release</a>
   </p>
 </div>
