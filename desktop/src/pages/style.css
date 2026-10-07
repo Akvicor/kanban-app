@@ -1,0 +1,138 @@
+/* 本地页面（服务器设置页、错误页）的样式，配色与看板的清爽 / 暗夜配色一致，跟随系统亮暗。 */
+:root {
+  color-scheme: light dark;
+  --bg: #F7F8FA;
+  --surface: #FFFFFF;
+  --text: #172B4D;
+  --muted: #626F86;
+  --border: #DCDFE4;
+  --primary: #0C66E4;
+  --primary-text: #FFFFFF;
+  --danger: #C9372C;
+  --warning: #A54800;
+  font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1D2125;
+    --surface: #22272B;
+    --text: #DEE4EA;
+    --muted: #9FADBC;
+    --border: #38414A;
+    --primary: #579DFF;
+    --primary-text: #1D2125;
+    --danger: #F87168;
+    --warning: #F5CD47;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.card {
+  width: 420px;
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+}
+
+h1 {
+  margin: 16px 0 8px;
+  font-size: 20px;
+}
+
+.hint,
+.origin,
+.version {
+  color: var(--muted);
+}
+
+.origin {
+  word-break: break-all;
+}
+
+label {
+  display: block;
+  margin: 16px 0 6px;
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+input:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: -1px;
+}
+
+.warning {
+  color: var(--warning);
+}
+
+.error {
+  color: var(--danger);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+button {
+  padding: 8px 16px;
+  border: 1px solid var(--primary);
+  border-radius: 6px;
+  background: var(--primary);
+  color: var(--primary-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+button.secondary {
+  border-color: var(--border);
+  background: transparent;
+  color: var(--text);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.version {
+  margin: 24px 0 0;
+  font-size: 12px;
+}

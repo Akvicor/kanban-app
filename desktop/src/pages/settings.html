@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'"/>
+  <title>Kanban</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<main class="card">
+  <img class="logo" src="../icon.png" alt=""/>
+  <h1 data-i18n="settingsTitle"></h1>
+  <p class="hint" data-i18n="settingsHint"></p>
+  <form id="form" novalidate>
+    <label for="address" data-i18n="addressLabel"></label>
+    <input id="address" type="text" autocomplete="url" spellcheck="false" placeholder="https://kanban.example.com"/>
+    <p id="http-warning" class="warning" data-i18n="httpWarning" hidden></p>
+    <p id="error" class="error" role="alert" hidden></p>
+    <div class="actions">
+      <button type="button" id="cancel" class="secondary" data-i18n="cancel" hidden></button>
+      <button type="submit" id="connect" data-i18n="connect"></button>
+    </div>
+  </form>
+  <p id="version" class="version"></p>
+</main>
+<script src="settings.js"></script>
+</body>
+</html>

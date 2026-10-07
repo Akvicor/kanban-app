@@ -1,0 +1,5 @@
+.idea
+/desktop/node_modules
+/desktop/dist
+/desktop/release
+/desktop/.yarn/install-state.gz

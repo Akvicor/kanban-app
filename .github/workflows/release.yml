@@ -1,0 +1,120 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]*"
+
+permissions:
+  contents: read
+
+jobs:
+  # 质量门禁：tag 必须是 v 开头的语义化版本，且 make verify 通过后才打包和发布。
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate version tag
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "Tag must be a semantic version beginning with v, for example v1.0.0" >&2
+            exit 1
+          fi
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: desktop/package.json
+
+      - name: Enable Yarn
+        run: corepack enable
+
+      - name: Verify
+        run: make verify
+
+  # 安装包在对应系统的 runner 上打包：macOS 包只能在 macOS 上生成 dmg 并签名，Windows 包在 Windows 上打包。
+  # 发布的安装包不使用证书：macOS 包为临时签名，Windows 包不签名。
+  package:
+    needs: verify
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux
+            arch: amd64
+            runner: ubuntu-latest
+          - platform: linux
+            arch: arm64
+            runner: ubuntu-24.04-arm
+          - platform: windows
+            arch: amd64
+            runner: windows-latest
+          - platform: darwin
+            arch: arm64
+            runner: macos-latest
+          - platform: darwin
+            arch: amd64
+            runner: macos-latest
+    runs-on: ${{ matrix.runner }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: desktop/package.json
+
+      - name: Enable Yarn
+        run: corepack enable
+
+      # Makefile 使用 GNU make 和 POSIX shell 语法；Windows runner 上安装 GNU make，配方由 Git Bash 执行。
+      - name: Install make
+        if: runner.os == 'Windows'
+        run: choco install make --no-progress -y
+
+      - name: Package
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: make desktop-build VERSION="${VERSION#v}" PLATFORM=${{ matrix.platform }} ARCH=${{ matrix.arch }} OUTPUT_DIR=dist
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: kanban-app-${{ matrix.platform }}-${{ matrix.arch }}
+          path: dist/*
+          if-no-files-found: error
+
+  release:
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download packages
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Create checksums
+        working-directory: dist
+        run: sha256sum kanban-app_* > checksums.txt
+
+      # 重复运行同一个 tag 时覆盖已上传的文件。
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes --title "$GITHUB_REF_NAME"
+          fi
